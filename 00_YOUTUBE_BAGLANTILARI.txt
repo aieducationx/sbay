@@ -1,0 +1,70 @@
+SOSYAL BİLİMLERDE ARAŞTIRMA YÖNTEMLERİ — YOUTUBE BAĞLANTI ÇİZELGESİ
+====================================================================
+
+Her dersin videosunu YouTube'a yükleyin (herkese açık ya da
+'liste dışı' olabilir; 'gizli/private' OLMAZ, gömülemez).
+Adresi aşağıdaki karşılığının yanına yapıştırın, sonra aynı
+satırları videolar.js içine taşıyın — ya da bu dosyayı olduğu
+gibi bana geri verin, ben yerleştiririm.
+
+
+--- Bölüm 1 · Araştırmanın Temelleri ---
+  D01  1A   Nereden Biliyorsunuz?
+       → 
+  D02  1B   Yöntemden Önce Varsayım
+       → 
+  D03  2A   Konu Değil, Soru
+       → 
+  D04  2B   Muhabir mi, Eleştirmen mi?
+       → 
+  D05  3A   Onay Belgesi Bir Savunma Değildir
+       → 
+  D06  3B   Kod Verdiniz, Anonim Değilsiniz
+       → 
+
+--- Bölüm 2 · Nicel Araştırma ---
+  D07  4A   Adı Değil, Rolü
+       → 
+  D08  4B   Kimin Adına Konuşuyorsunuz?
+       → 
+  D09  5A   O Dokuz Puanı Kim Yarattı?
+       → 
+  D10  5B   On Bir Rakip Hikâye
+       → 
+  D11  6A   Analiz Menüden Başlamaz
+       → 
+  D12  6B   p Küçük, Fark Kaç Puan?
+       → 
+
+--- Bölüm 3 · Nitel Araştırma ---
+  D13  7A   Küçük Örneklem Değil, Sınırlı Sistem
+       → 
+  D14  7B   Adını Koyduğunuz Desenin Borcu
+       → 
+  D15  8A   Sayı Değil, Bilgi Gücü
+       → 
+  D16  8B   Ekran da Bir Sahadır
+       → 
+  D17  9A   Kim Kurdu Bu Temayı?
+       → 
+  D18  9B   Katsayı mı, Denetim İzi mi?
+       → 
+
+--- Bölüm 4 · Birleştirme ve Raporlaştırma ---
+  D19  10A  İki Veri Toplamak Yetmez
+       → 
+  D20  10B  Hangi Tabloda Buluşuyorlar?
+       → 
+  D21  11A  Uygulayan ile Değerlendiren Aynı Kişi
+       → 
+  D22  11B  Takvimi Geriye Doğru Kurun
+       → 
+  D23  12A  Zombi İsimler ve Diri Cümleler
+       → 
+  D24  12B  Beyan Edilmeyen Her Şey
+       → 
+
+--------------------------------------------------------------------
+Yerel dosya da kullanılabilir: videoyu depodaki video/ klasörüne
+koyup buraya yalnızca dosya adını yazın (D01.mp4). GitHub'da
+tarayıcıyla yüklenebilecek en büyük dosya 25 MB'dir.

@@ -1,0 +1,151 @@
+SOSYAL BİLİMLERDE ARAŞTIRMA YÖNTEMLERİ — Mikroöğretim PDF Parçaları
+====================================================================
+
+Her alt başlık ayrı PDF. Platformun Oku adımından açılır;
+ayrıca tek tek dağıtılabilir.
+
+İÇİNDEKİLER:
+
+HAFTA 1 · Ders 1 · Araştırma Nedir, Nasıl Yapılır?
+  1.1 Bilgiye Ulaşmanın Beş Yolu
+      → 1.1_Bilgiye_Ulasmanin_Bes_Yolu.pdf (3 sayfa)
+  1.2 Araştırmayı Araştırma Yapan Nedir?
+      → 1.2_Arastirmayi_Arastirma_Yapan_Nedir.pdf (4 sayfa)
+  1.3 Araştırma Türleri
+      → 1.3_Arastirma_Turleri.pdf (4 sayfa)
+  1.4 Araştırmanın Arkasındaki Varsayımlar
+      → 1.4_Arastirmanin_Arkasindaki_Varsayimlar.pdf (4 sayfa)
+  1.5 Araştırma Süreci ve Dersin Merceği
+      → 1.5_Arastirma_Sureci_ve_Dersin_Mercegi.pdf (4 sayfa)
+
+HAFTA 2 · Ders 2 · Araştırma Problemi, Sorusu ve Literatür
+  2.1 Konudan Probleme
+      → 2.1_Konudan_Probleme.pdf (6 sayfa)
+  2.2 İyi Bir Araştırma Sorusunun Dört Ölçütü
+      → 2.2_Iyi_Bir_Arastirma_Sorusunun_Dort_Olcutu.pdf (5 sayfa)
+  2.3 Terimleri Tanımlamak
+      → 2.3_Terimleri_Tanimlamak.pdf (5 sayfa)
+  2.4 Literatür Taraması
+      → 2.4_Literatur_Taramasi.pdf (7 sayfa)
+  2.5 Kuramsal Çerçeve
+      → 2.5_Kuramsal_Cerceve.pdf (5 sayfa)
+
+HAFTA 3 · Ders 3 · Araştırma Etiği, İzinler ve Kişisel Verilerin Korunması
+  3.1 Etik Neden Kurallardan Önce Gelir
+      → 3.1_Etik_Neden_Kurallardan_Once_Gelir.pdf (4 sayfa)
+  3.2 Aydınlatılmış Onam, Gönüllülük ve Zarar Vermeme
+      → 3.2_Aydinlatilmis_Onam_Gonulluluk_ve_Zarar_Vermeme.pdf (6 sayfa)
+  3.3 Türkiye'de İzin Zinciri
+      → 3.3_Turkiyede_Izin_Zinciri.pdf (5 sayfa)
+  3.4 Kişisel Verilerin Korunması
+      → 3.4_Kisisel_Verilerin_Korunmasi.pdf (5 sayfa)
+  3.5 Araştırmacının Dürüstlüğü
+      → 3.5_Arastirmacinin_Durustlugu.pdf (5 sayfa)
+
+HAFTA 4 · Ders 4 · Değişkenler, Hipotezler ve Örnekleme
+  4.1 Değişkenler
+      → 4.1_Degiskenler.pdf (7 sayfa)
+  4.2 Hipotezler
+      → 4.2_Hipotezler.pdf (5 sayfa)
+  4.3 Evren ve Örneklem
+      → 4.3_Evren_ve_Orneklem.pdf (6 sayfa)
+  4.4 Örneklem Büyüklüğü ve Hata
+      → 4.4_Orneklem_Buyuklugu_ve_Hata.pdf (5 sayfa)
+  4.5 Nicel Desenler
+      → 4.5_Nicel_Desenler.pdf (5 sayfa)
+
+HAFTA 5 · Ders 5 · Deneysel Desenler ve Ölçme
+  5.1 Deneysel Araştırmanın Mantığı
+      → 5.1_Deneysel_Arastirmanin_Mantigi.pdf (5 sayfa)
+  5.2 Güçlü Desenler
+      → 5.2_Guclu_Desenler.pdf (9 sayfa)
+  5.3 İç ve Dış Geçerlik Tehditleri
+      → 5.3_Ic_ve_Dis_Gecerlik_Tehditleri.pdf (8 sayfa)
+  5.4 Ölçme ve Geçerlik
+      → 5.4_Olcme_ve_Gecerlik.pdf (5 sayfa)
+  5.5 Güvenirlik
+      → 5.5_Guvenirlik.pdf (5 sayfa)
+
+HAFTA 6 · Ders 6 · Nicel Veri Analizi ve Yorumlama
+  6.1 Analizden Önce: Veriyi Tanımak
+      → 6.1_Analizden_Once_Veriyi_Tanimak.pdf (5 sayfa)
+  6.2 Betimsel İstatistik: Veriyi Konuşturmak
+      → 6.2_Betimsel_Istatistik_Veriyi_Konusturmak.pdf (5 sayfa)
+  6.3 Çıkarımsal İstatistiğin Mantığı
+      → 6.3_Cikarimsal_Istatistigin_Mantigi.pdf (5 sayfa)
+  6.4 Test Seçimi ve Uygulama
+      → 6.4_Test_Secimi_ve_Uygulama.pdf (8 sayfa)
+  6.5 Yorumlama: p, Etki Büyüklüğü ve Raporlama
+      → 6.5_Yorumlama_p_Etki_Buyuklugu_ve_Raporlama.pdf (6 sayfa)
+
+HAFTA 7 · Ders 7 · Nitel Araştırmanın Doğası ve Desenleri
+  7.1 Nitel Araştırmanın Ayırt Edici Özellikleri
+      → 7.1_Nitel_Arastirmanin_Ayirt_Edici_Ozellikleri.pdf (7 sayfa)
+  7.2 Temel Nitel Çalışma ve Durum Çalışması
+      → 7.2_Temel_Nitel_Calisma_ve_Durum_Calismasi.pdf (5 sayfa)
+  7.3 Fenomenoloji ve Gömülü Kuram
+      → 7.3_Fenomenoloji_ve_Gomulu_Kuram.pdf (7 sayfa)
+  7.4 Etnografi ve Anlatı Araştırması
+      → 7.4_Etnografi_ve_Anlati_Arastirmasi.pdf (5 sayfa)
+  7.5 Desen Seçimi
+      → 7.5_Desen_Secimi.pdf (7 sayfa)
+
+HAFTA 8 · Ders 8 · Nitel Veri Toplama
+  8.1 Amaçlı Örnekleme
+      → 8.1_Amacli_Ornekleme.pdf (6 sayfa)
+  8.2 Kaç Kişi?
+      → 8.2_Kac_Kisi.pdf (5 sayfa)
+  8.3 Görüşme
+      → 8.3_Gorusme.pdf (7 sayfa)
+  8.4 Gözlem ve Doküman
+      → 8.4_Gozlem_ve_Dokuman.pdf (6 sayfa)
+  8.5 Sahaya Giriş ve Kayıt
+      → 8.5_Sahaya_Giris_ve_Kayit.pdf (9 sayfa)
+
+HAFTA 9 · Ders 9 · Nitel Veri Analizi ve İnandırıcılık
+  9.1 Analiz Veri Toplarken Başlar
+      → 9.1_Analiz_Veri_Toplarken_Baslar.pdf (6 sayfa)
+  9.2 Birinci Döngü Kodlama
+      → 9.2_Birinci_Dongu_Kodlama.pdf (8 sayfa)
+  9.3 İkinci Döngü ve Temaya Geçiş
+      → 9.3_Ikinci_Dongu_ve_Temaya_Gecis.pdf (9 sayfa)
+  9.4 Analiz Yaklaşımları
+      → 9.4_Analiz_Yaklasimlari.pdf (9 sayfa)
+  9.5 İnandırıcılık
+      → 9.5_Inandiricilik.pdf (9 sayfa)
+
+HAFTA 10 · Ders 10 · Karma Yöntem Araştırmaları
+  10.1 Karma Yöntem Nedir, Ne Değildir
+      → 10.1_Karma_Yontem_Nedir_Ne_Degildir.pdf (6 sayfa)
+  10.2 Üç Temel Desen
+      → 10.2_Uc_Temel_Desen.pdf (6 sayfa)
+  10.3 Karmaşık Desenler
+      → 10.3_Karmasik_Desenler.pdf (6 sayfa)
+  10.4 Entegrasyon Nasıl Yapılır
+      → 10.4_Entegrasyon_Nasil_Yapilir.pdf (11 sayfa)
+  10.5 Kalite ve Raporlama
+      → 10.5_Kalite_ve_Raporlama.pdf (6 sayfa)
+
+HAFTA 11 · Ders 11 · Kendi Uygulamanı Araştırmak ve Öneriyi Yazmak
+  11.1 Eylem Araştırmasının Mantığı
+      → 11.1_Eylem_Arastirmasinin_Mantigi.pdf (6 sayfa)
+  11.2 Eylem Araştırması Döngüsü
+      → 11.2_Eylem_Arastirmasi_Dongusu.pdf (6 sayfa)
+  11.3 Tasarım Tabanlı Araştırma
+      → 11.3_Tasarim_Tabanli_Arastirma.pdf (4 sayfa)
+  11.4 Araştırma Önerisinin Anatomisi
+      → 11.4_Arastirma_Onerisinin_Anatomisi.pdf (6 sayfa)
+  11.5 Öneriyi Savunmak
+      → 11.5_Oneriyi_Savunmak.pdf (6 sayfa)
+
+HAFTA 12 · Ders 12 · Araştırma Raporunu Yazmak ve Yayımlamak
+  12.1 IMRaD: Raporun Anatomisi
+      → 12.1_IMRaD_Raporun_Anatomisi.pdf (5 sayfa)
+  12.2 Akademik Yazının Kuralları
+      → 12.2_Akademik_Yazinin_Kurallari.pdf (7 sayfa)
+  12.3 APA 7 Uygulaması
+      → 12.3_APA_7_Uygulamasi.pdf (6 sayfa)
+  12.4 Raporlama Standartları ve Şeffaflık
+      → 12.4_Raporlama_Standartlari_ve_Seffaflik.pdf (5 sayfa)
+  12.5 Yayın Süreci ve Yayın Etiği
+      → 12.5_Yayin_Sureci_ve_Yayin_Etigi.pdf (6 sayfa)
