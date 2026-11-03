@@ -2,6 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta name="surum" content="3">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sosyal Bilimlerde Araştırma Yöntemleri — Mikroöğretim</title>
 <meta name="description" content="On iki hafta, yirmi dört ders. Bir kanaat ne zaman kanıta dönüşür?">
@@ -25843,8 +25845,10 @@ class Component extends DCLogic {
     if (q.type === 'tf') return a === q.correct;
     return (q.answers || []).some(x => this.norm(x) === this.norm(a));
   }
-  // Geçme eşiği: soruların %60'ı (6 soruda 4, 8 soruda 5, 10 soruda 6).
-  gecmeEsigi(n) { return Math.max(1, Math.ceil(n * 0.6)); }
+  // Geçme eşiği: soruların yarısı — 4 soruda 2, 6'da 3, 8'de 4, 10'da 5.
+  // Ders bankasındaki soru sayısı derse göre 3 ile 9 arasında değiştiği için
+  // eşik sabit bir sayı değil, oranla hesaplanır.
+  gecmeEsigi(n) { return Math.max(1, Math.round(n / 2)); }
 
   // Bir dersin soru denemesini sayar ve yeni sayıyı döndürür.
   denemeArtir() {
@@ -26084,13 +26088,13 @@ class Component extends DCLogic {
       { n: 1, t: 'Her ders beş adımdan oluşur: Oku, İzle, Değerlendirme Soruları, Görev ve Üret ve Paylaş. Beşi tamamlanmadan ders kapanmaz.' },
       { n: 2, t: 'Dersler sırayla açılır; tamamladığınız derse dilediğiniz an geri dönebilirsiniz.' },
       { n: 3, t: 'Her haftanın ikinci dersi o haftanın Uygulama Yaprağı’na bağlanır; yapraklar üst üste birikerek araştırma önerinizi oluşturur.' },
-      { n: 4, t: 'Bir bölümün dersleri bitince 10 soruluk bölüm sınavı açılır; 6 doğru yeterlidir. Her soruda bir ipucu hakkınız vardır ve ikinci denemeden sonra bölüm kendiliğinden açılır.' },
+      { n: 4, t: 'Bir bölümün dersleri bitince 10 soruluk bölüm sınavı açılır; 5 doğru yeterlidir. Her soruda bir ipucu hakkınız vardır ve ikinci denemeden sonra bölüm kendiliğinden açılır.' },
       { n: 5, t: 'Dört bölümün sınavı da geçilince karneniz tamamlanır.' },
     ];
     v.stepCards = [
       { name: 'Oku', desc: 'Sayfalı ders metni; tanım, örnek ve dikkat kutuları' },
       { name: 'İzle', desc: 'Dersin 8–12 dakikalık video özeti' },
-      { name: 'Değerlendirme', desc: 'Altı soru; dördü doğruysa geçer, ipucu alınabilir' },
+      { name: 'Değerlendirme', desc: 'Soruların yarısı doğruysa geçer; her soruda ipucu' },
       { name: 'Görev', desc: 'Açık uçlu yazı; yapay zekâ geri bildirimi ve örnek cevap' },
       { name: 'Üret ve Paylaş', desc: 'Öneri dosyanıza giren çıktı; Padlet panosunda paylaşılır' },
     ];
@@ -26276,10 +26280,14 @@ class Component extends DCLogic {
       });
       v.checkQuiz = this.checkQuiz;
       v.quizBtn = st.quiz.checked ? 'Tekrar dene' : 'Yanıtları kontrol et';
+      const quizDeneme = p.quizTry || 0;
       v.quizStatus = st.quiz.checked
         ? (l.questions.filter((q, i) => this.isCorrect(q, st.quiz.answers[i])).length + '/' + l.questions.length + ' doğru')
         : (p.quiz ? 'Bu adım tamamlandı'
-          : (quizEsik + '/' + l.questions.length + ' doğru yeterli · ikinci denemeden sonra adım kendiliğinden açılır'));
+          : (quizEsik + '/' + l.questions.length + ' doğru yeterli · ' +
+             (quizDeneme >= 1
+               ? 'bir deneme yaptınız; bu denemeden sonra adım kendiliğinden açılır'
+               : 'ikinci denemeden sonra adım kendiliğinden açılır')));
 
       v.taskValue = st.task.value; v.onTask = this.onTask; v.submitTask = this.submitTask; v.toggleExample = this.toggleExample;
       v.taskBtn = st.task.loading ? 'Değerlendiriliyor…' : (p.task ? 'Yeniden değerlendir' : 'Gönder ve geri bildirim al');
@@ -26492,7 +26500,7 @@ window.addEventListener('DOMContentLoaded', function () {
         <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
           <input value="{{nameDraft}}" onInput="{{onName}}" onKeyDown="{{onNameKey}}" placeholder="Adınız" style="width:240px;background:oklch(0.27 0.02 55);border-color:oklch(0.38 0.02 55);color:oklch(0.95 0.01 78)">
           <button onClick="{{start}}" class="btnp" style="background:oklch(0.62 0.16 42)">{{startLabel}}</button>
-          <div style="font-size:12px;color:oklch(0.6 0.015 60)">Çalışmanız yalnızca bu cihazda saklanır.</div>
+          <div style="font-size:12px;color:oklch(0.6 0.015 60)">Çalışmanız yalnızca bu cihazda saklanır. <span style="opacity:0.75">· Sürüm 3 (3 Kasım 2026)</span></div>
         </div>
         </sc-if>
       </div>
