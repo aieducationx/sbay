@@ -16476,7 +16476,7 @@ window.LESSONS = {
      "Görüşme sorusunun kendisi"
     ],
     "correct": 2,
-    "expl": "Kod kısa bir öbektir, yeniden kullanılabilir ve neyin örneği olduğunu söyleyebilirsiniz; (a) ve (d) bulgudur, (b) bir konu başlığıdır (Alt başlık 9.2)."
+    "expl": "Kod kısa bir öbektir, yeniden kullanılabilir ve neyin örneği olduğunu söyleyebilirsiniz; tırnak içindeki iki tam cümle bulgudur, “TARTIŞMALI KONULAR” ise bir konu başlığıdır (Alt başlık 9.2)."
    },
    {
     "type": "mc",
@@ -20125,7 +20125,7 @@ window.LESSONS = {
      "Ortak gösterime uyum etiketi sütunu eklemek"
     ],
     "correct": 1,
-    "expl": "Nicelleştirme, nitel veriyi istatistiksel olarak çözümlenebilecek sayısal koda çevirir; (a) tersi yöndür, nitelleştirmedir (Alt başlık 10.4)."
+    "expl": "Nicelleştirme, nitel veriyi istatistiksel olarak çözümlenebilecek sayısal koda çevirir; devam ve ödev sayılarından öğrenci tipleri kurmak ise ters yöndedir, nitelleştirmedir (Alt başlık 10.4)."
    },
    {
     "type": "mc",
@@ -23046,7 +23046,7 @@ window.LESSONS = {
      "Beklendiği gibi deney grubu daha başarılı olmuştur."
     ],
     "correct": 1,
-    "expl": "Yalnızca (b) veriden doğrudan çıkarılabilir; diğer dördü yorum, karşılaştırma, öneri ya da beklenti içerir (Alt başlık 12.1)."
+    "expl": "Yalnızca istatistik değerleriyle verilen cümle veriden doğrudan çıkarılabilir; diğer dördü yorum, karşılaştırma, öneri ya da beklenti içerir (Alt başlık 12.1)."
    },
    {
     "type": "mc",
@@ -25295,6 +25295,51 @@ window.AB_KOPRU = {};
 </script>
 <script>
 var LESSONS = window.LESSONS, SECTIONS = window.SECTIONS, AB_KOPRU = window.AB_KOPRU || {};
+
+/* --------------------------------------------------------------------------
+   Şık dengeleyici.
+
+   Soru bankası yazılırken doğru yanıtlar farkında olmadan b ve c şıklarında
+   toplanmıştı; (a) hiç kullanılmamıştı. Bu, soruları bilgi ölçmeyen bir
+   örüntüye çeviriyor: hep b ya da c işaretleyen bir öğrenci okumadan geçer.
+
+   Aşağıdaki geçiş, her çoktan seçmeli sorunun doğru yanıtını sırayla a, b,
+   c, d, e konumlarına yerleştirir; yanlış şıkları da soru metninden türeyen
+   sabit bir tohumla karıştırır. Tohum sabit olduğu için sıralama her
+   açılışta aynıdır — öğrenci sayfayı yenileyince şıklar yerinden oynamaz,
+   ama doğru yanıt bütün bankaya eşit dağılır.
+   ------------------------------------------------------------------------ */
+(function dengele() {
+  var k = 0;
+  Object.keys(LESSONS).sort().forEach(function (lid) {
+    (LESSONS[lid].questions || []).forEach(function (q) {
+      if (q.type !== 'mc' || !q.options || q.options.length < 2) return;
+      var n = q.options.length;
+      var hedef = k % n; k++;
+
+      var h = 2166136261, metin = String(q.q || '');
+      for (var i = 0; i < metin.length; i++) {
+        h ^= metin.charCodeAt(i); h = Math.imul(h, 16777619);
+      }
+      var rnd = function () {
+        h ^= h << 13; h ^= h >>> 17; h ^= h << 5;
+        return (h >>> 0) / 4294967296;
+      };
+
+      var yanlis = [];
+      for (var j = 0; j < n; j++) if (j !== q.correct) yanlis.push(j);
+      for (var m = yanlis.length - 1; m > 0; m--) {
+        var r = Math.floor(rnd() * (m + 1));
+        var t = yanlis[m]; yanlis[m] = yanlis[r]; yanlis[r] = t;
+      }
+
+      var sira = [], yi = 0;
+      for (var p = 0; p < n; p++) sira.push(p === hedef ? q.correct : yanlis[yi++]);
+      q.options = sira.map(function (i2) { return q.options[i2]; });
+      q.correct = hedef;
+    });
+  });
+})();
 class Component extends DCLogic {
   KEY = 'sbay_mo_v1';
 

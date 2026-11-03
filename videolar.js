@@ -53,9 +53,9 @@ window.SBAY_VIDEO = {
 
     // ---- Bölüm 1 · Araştırmanın Temelleri ----
     "D01": "https://youtu.be/ALXymMZ9AU4",                // 1A   Nereden Biliyorsunuz?
-    "D02": "",                                            // 1B   Yöntemden Önce Varsayım
-    "D03": "",                                            // 2A   Konu Değil, Soru
-    "D04": "",                                            // 2B   Muhabir mi, Eleştirmen mi?
+    "D02": "https://youtu.be/4PP-k97Q6FM",                // 1B   Yöntemden Önce Varsayım
+    "D03": "https://youtu.be/sd6VfiKiznY",                // 2A   Konu Değil, Soru
+    "D04": "https://youtu.be/v5WT-wvcwyY",                // 2B   Muhabir mi, Eleştirmen mi?
     "D05": "https://youtu.be/we64sho1ZYc",                // 3A   Onay Belgesi Bir Savunma Değildir
     "D06": "https://youtu.be/bfwpZLv6AM0",                // 3B   Kod Verdiniz, Anonim Değilsiniz
 
