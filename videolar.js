@@ -56,12 +56,12 @@ window.SBAY_VIDEO = {
     "D02": "",                                            // 1B   Yöntemden Önce Varsayım
     "D03": "",                                            // 2A   Konu Değil, Soru
     "D04": "",                                            // 2B   Muhabir mi, Eleştirmen mi?
-    "D05": "",                                            // 3A   Onay Belgesi Bir Savunma Değildir
-    "D06": "",                                            // 3B   Kod Verdiniz, Anonim Değilsiniz
+    "D05": "https://youtu.be/we64sho1ZYc",                // 3A   Onay Belgesi Bir Savunma Değildir
+    "D06": "https://youtu.be/bfwpZLv6AM0",                // 3B   Kod Verdiniz, Anonim Değilsiniz
 
     // ---- Bölüm 2 · Nicel Araştırma ----
-    "D07": "",                                            // 4A   Adı Değil, Rolü
-    "D08": "",                                            // 4B   Kimin Adına Konuşuyorsunuz?
+    "D07": "https://youtu.be/PQlgm7V5WUA",                // 4A   Adı Değil, Rolü
+    "D08": "https://youtu.be/KKQQcq_KPbc",                // 4B   Kimin Adına Konuşuyorsunuz?
     "D09": "",                                            // 5A   O Dokuz Puanı Kim Yarattı?
     "D10": "",                                            // 5B   On Bir Rakip Hikâye
     "D11": "",                                            // 6A   Analiz Menüden Başlamaz

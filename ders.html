@@ -25302,7 +25302,7 @@ class Component extends DCLogic {
     view: 'welcome', name: '', nameDraft: '',
     lid: null, seg: 0,
     progress: {},
-    quiz: { answers: {}, checked: false },
+    quiz: { answers: {}, checked: false, hints: {} },
     task: { value: '', loading: false, feedback: null, showExample: false },
     prod: { checks: {} },
     a11y: { scale: 1, contrast: false, focus: false },
@@ -25739,7 +25739,7 @@ class Component extends DCLogic {
     const p = this.prog(id);
     this.setState({
       view: 'lesson', lid: id, seg: 0,
-      quiz: { answers: {}, checked: false },
+      quiz: { answers: {}, checked: false, hints: {} },
       task: { value: p.taskText || '', loading: false, feedback: null, showExample: false },
       prod: { checks: {} }, tts: 'idle',
     });
@@ -25784,12 +25784,12 @@ class Component extends DCLogic {
   pickAnswer = (qi, val) => {
     if (this.state.quiz.checked) return;
     const answers = Object.assign({}, this.state.quiz.answers); answers[qi] = val;
-    this.setState({ quiz: { answers, checked: false } });
+    this.setState({ quiz: Object.assign({}, this.state.quiz, { answers, checked: false }) });
   };
   onFill = (qi, e) => {
     if (this.state.quiz.checked) return;
     const answers = Object.assign({}, this.state.quiz.answers); answers[qi] = e.target.value;
-    this.setState({ quiz: { answers, checked: false } });
+    this.setState({ quiz: Object.assign({}, this.state.quiz, { answers, checked: false }) });
   };
   norm(s) { return String(s || '').toLocaleLowerCase('tr').replace(/[^\wçğıöşü]/g, '').trim(); }
   isCorrect(q, a) {
@@ -25798,16 +25798,70 @@ class Component extends DCLogic {
     if (q.type === 'tf') return a === q.correct;
     return (q.answers || []).some(x => this.norm(x) === this.norm(a));
   }
+  // Geçme eşiği: soruların %60'ı (6 soruda 4, 8 soruda 5, 10 soruda 6).
+  gecmeEsigi(n) { return Math.max(1, Math.ceil(n * 0.6)); }
+
+  // Bir dersin soru denemesini sayar ve yeni sayıyı döndürür.
+  denemeArtir() {
+    const id = this.state.lid; if (!id) return 1;
+    const progress = Object.assign({}, this.state.progress);
+    progress[id] = Object.assign({}, progress[id]);
+    progress[id].quizTry = (progress[id].quizTry || 0) + 1;
+    this.setState({ progress }); this.persist({ progress });
+    return progress[id].quizTry;
+  }
+
+  // İpucu: çoktan seçmelide iki yanlış şıkkı eler, boşluk doldurmada
+  // ilk harfi ve harf sayısını söyler. Doğru/Yanlış sorusunda ipucu yok.
+  ipucuUret(q) {
+    if (q.type === 'mc') {
+      const yanlis = q.options.map((_, i) => i).filter(i => i !== q.correct);
+      for (let i = yanlis.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = yanlis[i]; yanlis[i] = yanlis[j]; yanlis[j] = t;
+      }
+      const kac = Math.min(2, Math.max(0, q.options.length - 2));
+      return { ele: yanlis.slice(0, kac), metin: kac + ' yanlış seçenek elendi.' };
+    }
+    if (q.type === 'fill') {
+      const a = String((q.answers || [''])[0] || '');
+      const harf = a.replace(/\s/g, '').length;
+      return { ele: [], metin: 'İlk harf “' + a.slice(0, 1).toLocaleUpperCase('tr') +
+        '” · ' + harf + ' harf' };
+    }
+    return { ele: [], metin: '' };
+  }
+  quizIpucu = (qi) => {
+    const les = this.lesson(this.state.lid); if (!les) return;
+    const hints = Object.assign({}, this.state.quiz.hints || {});
+    if (hints[qi]) return;
+    hints[qi] = this.ipucuUret(les.questions[qi]);
+    this.setState({ quiz: Object.assign({}, this.state.quiz, { hints }) });
+  };
+
   checkQuiz = () => {
     const les = this.lesson(this.state.lid); if (!les) return;
-    if (this.state.quiz.checked) { this.setState({ quiz: { answers: {}, checked: false } }); return; }
+    if (this.state.quiz.checked) {
+      this.setState({ quiz: { answers: {}, checked: false, hints: {} } }); return;
+    }
     const qs = les.questions; const ans = this.state.quiz.answers;
     const unanswered = qs.filter((q, i) => ans[i] === undefined || ans[i] === '').length;
     if (unanswered > 0) { this.showToast(unanswered + ' soru yanıtlanmadı.'); return; }
     const correct = qs.filter((q, i) => this.isCorrect(q, ans[i])).length;
-    this.setState({ quiz: { answers: ans, checked: true } });
-    if (correct === qs.length) { this.setStep('quiz', true); this.showToast('Tamamı doğru — adım tamamlandı.'); }
-    else this.showToast(correct + '/' + qs.length + ' doğru. Yanlışları düzeltip tekrar deneyin.');
+    const esik = this.gecmeEsigi(qs.length);
+    const deneme = this.denemeArtir();
+    this.setState({ quiz: Object.assign({}, this.state.quiz, { answers: ans, checked: true }) });
+    if (correct >= esik) {
+      this.setStep('quiz', true);
+      this.showToast(correct + '/' + qs.length + ' doğru — adım tamamlandı.');
+    } else if (deneme >= 2) {
+      this.setStep('quiz', true);
+      this.showToast(correct + '/' + qs.length + '. İki deneme tamamlandı; adım açıldı. ' +
+        'Açıklamaları okuyup devam edebilirsiniz.');
+    } else {
+      this.showToast(correct + '/' + qs.length + ' doğru. Geçmek için ' + esik +
+        ' yeterli — yanlışları düzeltip tekrar deneyin.');
+    }
   };
 
   // ---------- Görev ----------
@@ -25880,23 +25934,34 @@ class Component extends DCLogic {
     if (notDone > 0) { this.showToast('Bölümün tüm dersleri bitmeden sınav açılmaz.'); return; }
     const pool = this.examPool(sec).slice();
     for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
-    this.setState({ view: 'exam', examSec: secNum, exam: { qs: pool.slice(0, 10), answers: {}, checked: false, score: 0 } });
+    this.setState({ view: 'exam', examSec: secNum, exam: { qs: pool.slice(0, 10), answers: {}, checked: false, score: 0, hints: {} } });
     window.scrollTo(0, 0);
   };
   pickExam = (i, v) => { if (this.state.exam.checked) return; const a = Object.assign({}, this.state.exam.answers); a[i] = v; this.setState({ exam: Object.assign({}, this.state.exam, { answers: a }) }); };
+  examIpucu = (qi) => {
+    const ex = this.state.exam; if (!ex) return;
+    const hints = Object.assign({}, ex.hints || {});
+    if (hints[qi]) return;
+    hints[qi] = this.ipucuUret(ex.qs[qi]);
+    this.setState({ exam: Object.assign({}, ex, { hints }) });
+  };
   submitExam = () => {
     const ex = this.state.exam; if (!ex) return;
     if (ex.checked) { this.goMap(); return; }
     const un = ex.qs.filter((q, i) => ex.answers[i] === undefined).length;
     if (un > 0) { this.showToast(un + ' soru yanıtlanmadı.'); return; }
     const score = ex.qs.filter((q, i) => ex.answers[i] === q.correct).length;
-    const passed = score >= 7;
-    if (passed) {
-      const progress = Object.assign({}, this.state.progress);
-      progress['exam' + this.state.examSec] = { passed: true, score };
-      this.setState({ progress, exam: Object.assign({}, ex, { checked: true, score }) });
-      this.persist({ progress });
-    } else this.setState({ exam: Object.assign({}, ex, { checked: true, score }) });
+    const esik = this.gecmeEsigi(ex.qs.length);
+    const progress = Object.assign({}, this.state.progress);
+    const tk = 'examTry' + this.state.examSec;
+    const deneme = (progress[tk] || 0) + 1;
+    progress[tk] = deneme;
+    const esikle = score >= esik;
+    const passed = esikle || deneme >= 2;
+    if (passed) progress['exam' + this.state.examSec] = { passed: true, score };
+    this.setState({ progress, exam: Object.assign({}, ex,
+      { checked: true, score, passed, esikle, deneme }) });
+    this.persist({ progress });
   };
   retryExam = () => this.startExam(this.state.examSec);
 
@@ -25974,13 +26039,13 @@ class Component extends DCLogic {
       { n: 1, t: 'Her ders beş adımdan oluşur: Oku, İzle, Değerlendirme Soruları, Görev ve Üret ve Paylaş. Beşi tamamlanmadan ders kapanmaz.' },
       { n: 2, t: 'Dersler sırayla açılır; tamamladığınız derse dilediğiniz an geri dönebilirsiniz.' },
       { n: 3, t: 'Her haftanın ikinci dersi o haftanın Uygulama Yaprağı’na bağlanır; yapraklar üst üste birikerek araştırma önerinizi oluşturur.' },
-      { n: 4, t: 'Bir bölümün dersleri bitince 10 soruluk bölüm sınavı açılır; 7 doğruyla bölüm rozeti kazanılır ve sınav yeni sorularla tekrarlanabilir.' },
+      { n: 4, t: 'Bir bölümün dersleri bitince 10 soruluk bölüm sınavı açılır; 6 doğru yeterlidir. Her soruda bir ipucu hakkınız vardır ve ikinci denemeden sonra bölüm kendiliğinden açılır.' },
       { n: 5, t: 'Dört bölümün sınavı da geçilince karneniz tamamlanır.' },
     ];
     v.stepCards = [
       { name: 'Oku', desc: 'Sayfalı ders metni; tanım, örnek ve dikkat kutuları' },
       { name: 'İzle', desc: 'Dersin 8–12 dakikalık video özeti' },
-      { name: 'Değerlendirme', desc: 'Altı soru; tamamı doğru olana dek tekrarlanabilir' },
+      { name: 'Değerlendirme', desc: 'Altı soru; dördü doğruysa geçer, ipucu alınabilir' },
       { name: 'Görev', desc: 'Açık uçlu yazı; yapay zekâ geri bildirimi ve örnek cevap' },
       { name: 'Üret ve Paylaş', desc: 'Öneri dosyanıza giren çıktı; Padlet panosunda paylaşılır' },
     ];
@@ -26126,10 +26191,17 @@ class Component extends DCLogic {
       v.videoBitti = () => { if (!p.video) this.setStep('video', true); };
 
       const letters = ['a', 'b', 'c', 'd', 'e'];
+      const quizEsik = this.gecmeEsigi(l.questions.length);
       v.quizItems = l.questions.map((q, qi) => {
         const ans = st.quiz.answers[qi]; const checked = st.quiz.checked;
         const ok = this.isCorrect(q, ans);
+        const ipucu = (st.quiz.hints || {})[qi] || null;
+        const elenen = (ipucu && !checked) ? ipucu.ele : [];
         const item = { n: qi + 1, q: q.q, isChoice: q.type === 'mc' || q.type === 'tf', isFill: q.type === 'fill', showExpl: checked, expl: q.expl,
+          ipucuVar: !checked && !ipucu && q.type !== 'tf',
+          ipucuAc: () => this.quizIpucu(qi),
+          ipucuGoster: !!(ipucu && !checked && ipucu.metin),
+          ipucuMetin: ipucu ? ipucu.metin : '',
           explBg: ok ? 'oklch(0.968 0.014 145)' : 'oklch(0.968 0.014 28)', explFg: ok ? 'oklch(0.45 0.1 145)' : 'oklch(0.5 0.13 28)',
           explLabel: ok ? 'Doğru' : 'Doğru yanıt' };
         if (q.type === 'mc' || q.type === 'tf') {
@@ -26139,14 +26211,15 @@ class Component extends DCLogic {
             const sel = ans === val;
             const isRight = checked && (q.type === 'mc' ? oi === q.correct : val === q.correct);
             const isWrongSel = checked && sel && !isRight;
+            const elendi = elenen.indexOf(oi) >= 0;
             let border = 'oklch(0.9 0.011 72)', bgc = 'oklch(0.995 0.004 78)', col = 'oklch(0.36 0.018 60)';
             if (sel && !checked) { border = 'oklch(0.52 0.14 42)'; bgc = 'oklch(0.965 0.022 78)'; col = 'oklch(0.24 0.018 60)'; }
             if (isRight) { border = 'oklch(0.5 0.11 145)'; bgc = 'oklch(0.965 0.018 145)'; col = 'oklch(0.24 0.018 60)'; }
             if (isWrongSel) { border = 'oklch(0.55 0.15 28)'; bgc = 'oklch(0.965 0.018 28)'; col = 'oklch(0.24 0.018 60)'; }
             return {
               text: t, letter: q.type === 'mc' ? letters[oi] : (oi === 0 ? 'D' : 'Y'),
-              pick: () => this.pickAnswer(qi, val),
-              style: 'display:flex;gap:12px;align-items:flex-start;padding:11px 15px;border-radius:2px;border:1px solid ' + border + ';background:' + bgc + ';color:' + col + ';font-size:13.9px;line-height:1.55;width:100%',
+              pick: () => { if (!elendi) this.pickAnswer(qi, val); },
+              style: 'display:flex;gap:12px;align-items:flex-start;padding:11px 15px;border-radius:2px;border:1px solid ' + border + ';background:' + bgc + ';color:' + col + ';font-size:13.9px;line-height:1.55;width:100%' + (elendi ? ';opacity:0.38;text-decoration:line-through;cursor:not-allowed' : ''),
               mark: 'width:20px;height:20px;flex:none;border:1px solid ' + border + ';display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;text-transform:uppercase;font-family:\'IBM Plex Sans\'',
             };
           });
@@ -26160,7 +26233,8 @@ class Component extends DCLogic {
       v.quizBtn = st.quiz.checked ? 'Tekrar dene' : 'Yanıtları kontrol et';
       v.quizStatus = st.quiz.checked
         ? (l.questions.filter((q, i) => this.isCorrect(q, st.quiz.answers[i])).length + '/' + l.questions.length + ' doğru')
-        : (p.quiz ? 'Bu adım tamamlandı' : 'Tamamı doğru olduğunda adım tamamlanır');
+        : (p.quiz ? 'Bu adım tamamlandı'
+          : (quizEsik + '/' + l.questions.length + ' doğru yeterli · ikinci denemeden sonra adım kendiliğinden açılır'));
 
       v.taskValue = st.task.value; v.onTask = this.onTask; v.submitTask = this.submitTask; v.toggleExample = this.toggleExample;
       v.taskBtn = st.task.loading ? 'Değerlendiriliyor…' : (p.task ? 'Yeniden değerlendir' : 'Gönder ve geri bildirim al');
@@ -26199,28 +26273,46 @@ class Component extends DCLogic {
       const letters2 = ['a', 'b', 'c', 'd', 'e'];
       v.exam = {
         title: 'Bölüm ' + sec.num + ' sınavı · ' + sec.kicker,
-        sub: '10 soru · 7 doğru ile bölüm rozeti kazanılır. Sorular bölümün derslerinden rastgele seçilir.',
+        sub: ex.qs.length + ' soru · ' + this.gecmeEsigi(ex.qs.length) +
+          ' doğru ile bölüm rozeti kazanılır. Her soruda bir ipucu hakkınız var ve ' +
+          'ikinci denemeden sonra bölüm kendiliğinden açılır. Sorular bölümün ' +
+          'derslerinden rastgele seçilir.',
         btn: ex.checked ? 'Yol haritasına dön' : 'Sınavı bitir',
         retryVisible: ex.checked,
-        result: ex.checked ? (ex.score + '/10 — ' + (ex.score >= 7 ? 'Geçtiniz, bölüm mührü kazanıldı.' : 'Geçemediniz; yeni sorularla tekrar deneyin.')) : '',
-        resultColor: ex.checked ? (ex.score >= 7 ? 'oklch(0.45 0.1 145)' : 'oklch(0.5 0.13 28)') : 'oklch(0.56 0.018 60)',
-        items: ex.qs.map((q, qi) => ({
+        result: ex.checked
+          ? (ex.score + '/' + ex.qs.length + ' — ' + (ex.esikle
+              ? 'Geçtiniz, bölüm mührü kazanıldı.'
+              : (ex.passed
+                  ? 'Eşiğin altında kaldınız ama ikinci deneme tamamlandı; bölüm açıldı. Açıklamaları okuyun.'
+                  : 'Geçemediniz; yeni sorularla bir kez daha deneyin — bu denemeden sonra bölüm kendiliğinden açılacak.')))
+          : '',
+        resultColor: ex.checked ? (ex.passed ? 'oklch(0.45 0.1 145)' : 'oklch(0.5 0.13 28)') : 'oklch(0.56 0.018 60)',
+        items: ex.qs.map((q, qi) => {
+          const ipucu = (ex.hints || {})[qi] || null;
+          const elenen = (ipucu && !ex.checked) ? ipucu.ele : [];
+          return {
           n: qi + 1, q: q.q, showExpl: ex.checked, expl: q.expl,
+          ipucuVar: !ex.checked && !ipucu,
+          ipucuAc: () => this.examIpucu(qi),
+          ipucuGoster: !!(ipucu && !ex.checked && ipucu.metin),
+          ipucuMetin: ipucu ? ipucu.metin : '',
           explBg: ex.answers[qi] === q.correct ? 'oklch(0.968 0.014 145)' : 'oklch(0.968 0.014 28)',
         explFg: ex.answers[qi] === q.correct ? 'oklch(0.45 0.1 145)' : 'oklch(0.5 0.13 28)',
           options: q.options.map((t, oi) => {
             const sel = ex.answers[qi] === oi;
             const isRight = ex.checked && oi === q.correct;
             const isWrongSel = ex.checked && sel && !isRight;
+            const elendi = elenen.indexOf(oi) >= 0;
             let border = 'oklch(0.9 0.011 72)', bgc = 'oklch(0.995 0.004 78)', col = 'oklch(0.36 0.018 60)';
             if (sel && !ex.checked) { border = 'oklch(0.52 0.14 42)'; bgc = 'oklch(0.965 0.022 78)'; col = 'oklch(0.24 0.018 60)'; }
             if (isRight) { border = 'oklch(0.5 0.11 145)'; bgc = 'oklch(0.965 0.018 145)'; col = 'oklch(0.24 0.018 60)'; }
             if (isWrongSel) { border = 'oklch(0.55 0.15 28)'; bgc = 'oklch(0.965 0.018 28)'; col = 'oklch(0.24 0.018 60)'; }
-            return { text: t, letter: letters2[oi], pick: () => this.pickExam(qi, oi),
-              style: 'display:flex;gap:12px;align-items:flex-start;padding:10px 14px;border-radius:2px;border:1px solid ' + border + ';background:' + bgc + ';color:' + col + ';font-size:13.7px;line-height:1.55;width:100%',
+            return { text: t, letter: letters2[oi],
+              pick: () => { if (!elendi) this.pickExam(qi, oi); },
+              style: 'display:flex;gap:12px;align-items:flex-start;padding:10px 14px;border-radius:2px;border:1px solid ' + border + ';background:' + bgc + ';color:' + col + ';font-size:13.7px;line-height:1.55;width:100%' + (elendi ? ';opacity:0.38;text-decoration:line-through;cursor:not-allowed' : ''),
               mark: 'width:19px;height:19px;flex:none;border:1px solid ' + border + ';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700' };
           }),
-        })),
+        }; }),
       };
       v.submitExam = this.submitExam; v.retryExam = this.retryExam;
     }
@@ -26409,7 +26501,7 @@ window.addEventListener('DOMContentLoaded', function () {
       <div style="height:1px;flex:1;background:oklch(0.88 0.012 70)"></div>
     </div>
 
-    <div class="kick" style="color:oklch(0.52 0.14 42);margin-bottom:16px;text-align:center">İki kitap, altı bölüm</div>
+    <div class="kick" style="color:oklch(0.52 0.14 42);margin-bottom:16px;text-align:center">On iki hafta, dört bölüm</div>
     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
       <sc-for list="{{modOverview}}" as="m" hint-placeholder-count="6">
         <div class="card" style="padding:20px 22px;display:flex;gap:18px;align-items:flex-start;border-top:2px solid {{m.fg}}">
@@ -26730,6 +26822,16 @@ window.addEventListener('DOMContentLoaded', function () {
             <sc-if value="{{q.isFill}}" hint-placeholder-val="{{ false }}">
               <div style="padding-left:32px"><input value="{{q.fillValue}}" onInput="{{q.onFill}}" placeholder="Yanıtınızı yazın" style="max-width:340px"></div>
             </sc-if>
+            <sc-if value="{{q.ipucuVar}}" hint-placeholder-val="{{ true }}">
+              <div style="padding-left:32px;margin-top:11px">
+                <button onClick="{{q.ipucuAc}}" style="border:1px dashed oklch(0.78 0.08 78);background:none;border-radius:2px;padding:6px 12px;font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;color:oklch(0.52 0.12 60);cursor:pointer">İpucu</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{q.ipucuGoster}}" hint-placeholder-val="{{ false }}">
+              <div style="padding-left:32px;margin-top:11px;font-size:12.6px;color:oklch(0.5 0.11 78)">
+                <span class="kick" style="font-size:9.5px;margin-right:8px">İpucu</span>{{q.ipucuMetin}}
+              </div>
+            </sc-if>
             <sc-if value="{{q.showExpl}}" hint-placeholder-val="{{ false }}">
               <div style="margin:15px 0 0 32px;padding:14px 17px;background:{{q.explBg}};border-left:2px solid {{q.explFg}};font-size:13.4px;line-height:1.62;color:oklch(0.33 0.016 60)">
                 <span class="kick" style="font-size:9.5px;color:{{q.explFg}};margin-right:8px">{{q.explLabel}}</span>{{q.expl}}
@@ -26899,6 +27001,16 @@ window.addEventListener('DOMContentLoaded', function () {
             </button>
           </sc-for>
         </div>
+        <sc-if value="{{q.ipucuVar}}" hint-placeholder-val="{{ true }}">
+          <div style="padding-left:32px;margin-top:11px">
+            <button onClick="{{q.ipucuAc}}" style="border:1px dashed oklch(0.78 0.08 78);background:none;border-radius:2px;padding:6px 12px;font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;color:oklch(0.52 0.12 60);cursor:pointer">İpucu</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{q.ipucuGoster}}" hint-placeholder-val="{{ false }}">
+          <div style="padding-left:32px;margin-top:11px;font-size:12.6px;color:oklch(0.5 0.11 78)">
+            <span class="kick" style="font-size:9.5px;margin-right:8px">İpucu</span>{{q.ipucuMetin}}
+          </div>
+        </sc-if>
         <sc-if value="{{q.showExpl}}" hint-placeholder-val="{{ false }}">
           <div style="margin:14px 0 0 32px;padding:13px 16px;background:{{q.explBg}};border-left:2px solid {{q.explFg}};font-size:13.2px;line-height:1.6;color:oklch(0.33 0.016 60)">{{q.expl}}</div>
         </sc-if>
